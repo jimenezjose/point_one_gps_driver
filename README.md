@@ -2,9 +2,7 @@
 
 This is a ROS2 driver for [Atlas](https://pointonenav.com/docs/atlas) GPS / IMU Devices. 
 
-### Why choose Atlas?
-
-The Atlas delivers 10cm location accuracy in any environment with its proprietary [FusionEngine](https://pointonenav.com/fusionengine) software.
+> The Atlas delivers 10cm location accuracy in any environment with its proprietary [FusionEngine](https://pointonenav.com/fusionengine) software.
 
 ### Getting Started
 
