@@ -19,7 +19,7 @@ rosdep install -y --ignore-src --from-paths atlas_gps_driver/
 
 ##### Run Atlas node:
 
-* Optional: Edit the parameters in `atlas_gps_driver/param/atlas_gps_driver.param.yaml`.
+* Edit the parameters in `atlas_gps_driver/param/atlas_gps_driver.param.yaml`.
 * Optional: Remap output topic names in `atlas_gps_driver/launch/atlas_gps_driver.launch.py`.
 
 ```bash
