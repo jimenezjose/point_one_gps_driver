@@ -1,0 +1,8 @@
+/**:
+  ros__parameters:
+    use_sim_time: false  # Specifies if the ROS clock uses sim time or not
+    atlas_udp_port: 23451 # UDP port that has been set on the FusionEngine Client binary interface
+    atlas_connection_type: "udp" # The type of connection we want
+    atlas_tcp_ip: "" # IP Of the Atlas
+    atlas_tcp_port: 30201 # TCP port that has been set on the FusionEngine Client binary interface
+    frame_id: "gps" # Frame ID to use on the message. Generally, this is linked to the URDF so we can perform transformations on the data
