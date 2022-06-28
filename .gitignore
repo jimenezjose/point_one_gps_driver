@@ -1,0 +1,36 @@
+build/
+install/
+log/
+
+# Generated files.
+*.pyc
+*.html
+
+# Bazel output directories.
+bazel-*
+
+# Default cmake build directory.
+build/
+
+# CLion/Pycharm project settings.
+.clwb/
+.idea/
+
+# P1 binary files.
+*.p1bin
+*.p1log
+*.p1i
+
+# Doxygen output.
+docs/html/
+
+Doxyfile.version
+docs/include_header.js
+docs/versions.html
+
+# Other output files.
+*.csv
+*.kml
+
+# VSCode
+.vscode/

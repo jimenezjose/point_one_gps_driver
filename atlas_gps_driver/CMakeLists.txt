@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 project(atlas_gps_driver)
 
+include(ExternalProject)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra)
 endif()
@@ -25,11 +27,28 @@ ament_auto_add_executable(${PROJECT_NAME}_node_exe
   ${${PROJECT_NAME}_SRC}
 )
 
-add_library(fusion_engine_client
-  src/point_one/fusion_engine/common/logging.cc
-  src/point_one/fusion_engine/messages/crc.cc
-  src/point_one/fusion_engine/parsers/fusion_engine_framer.cc
+# Set location to store external project.
+set(EXTERNAL_INSTALL_LOCATION 
+  ${CMAKE_BINARY_DIR}/p1_fusion_engine_client
 )
+
+# Specify external project as a target.
+ExternalProject_Add(project_p1_fusion_engine_client
+  GIT_REPOSITORY https://github.com/PointOneNav/fusion-engine-client.git
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+  PREFIX ${EXTERNAL_INSTALL_LOCATION}
+)
+
+# Include header files required for external project.
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
+
+# Append shared library path to dynamic linker.
+SET(CMAKE_EXE_LINKER_FLAGS 
+  "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,${EXTERNAL_INSTALL_LOCATION}/lib"
+)
+
+# Library is not built until there is a dependency.
+add_dependencies(${PROJECT_NAME}_node_exe project_p1_fusion_engine_client)
 
 # Link Atlas node to fusion_engine_client library.
 target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)
