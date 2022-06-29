@@ -6,17 +6,17 @@ import os
 
 def generate_launch_description():
 
-    bringup_dir = get_package_share_directory('atlas_gps_driver')
+    bringup_dir = get_package_share_directory('point_one_gps_driver')
 
     param_file_path = os.path.join(
         bringup_dir,
         'param',
-        'atlas_gps_driver.param.yaml'
+        'point_one_gps_driver.param.yaml'
     )
     
     atlas_node = Node(
-        package='atlas_gps_driver',
-        executable='atlas_gps_driver_node_exe',
+        package='point_one_gps_driver',
+        executable='point_one_gps_driver_node_exe',
         output='screen',
         parameters=[
             param_file_path

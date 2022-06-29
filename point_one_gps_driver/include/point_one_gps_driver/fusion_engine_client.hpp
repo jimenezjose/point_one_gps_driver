@@ -1,39 +1,44 @@
-#ifndef ATLAS_RECEIVER_HPP
-#define ATLAS_RECEIVER_HPP
+#ifndef FUSION_ENGINE_CLIENT_HPP
+#define FUSION_ENGINE_CLIENT_HPP
 
 #include <cerrno>
-#include <cmath> // For lround()
-#include <csignal> // For signal()
-#include <cstdio> // For fprintf()
-#include <cstring> // For memcpy()
-#include <string> // For stoi() and strerror()
-#include <netdb.h> // For gethostbyname() and hostent
-#include <netinet/in.h> // For IPPROTO_* macros and htons()
-#include <sys/socket.h> // For socket support.
-#include <unistd.h> // For close()
+#include <cmath> 
+#include <csignal> 
+#include <cstdio> 
+#include <cstring> 
+#include <string> 
+#include <netdb.h> 
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h> 
 #include <vector>
 #include <arpa/inet.h>
+#include <algorithm>
 
 #include "rclcpp/rclcpp.hpp"
-#include "atlas_gps_driver/interfaces/atlas_byte_frame_listener.hpp"
-#include "atlas_gps_driver/interfaces/atlas_byte_frame_event.hpp"
+#include "point_one_gps_driver/fusion_engine/byte_frame_listener.hpp"
+#include "point_one_gps_driver/fusion_engine/byte_frame_event.hpp"
 
 /*
  * Reads bit stream from the Point One Nav Atlas and notifies all event 
- * listeners attached to this singleton object once a raw data packet 
- * been receieved.
+ * listeners attached to this singleton object once a raw FusionEngine 
+ * data packet is receieved.
  */
-class AtlasReceiver {
+class FusionEngineClient {
 public:
 
   /**
    * Singleton object. Only one message parser is necessary.
-   * @return static reference to single AtlasReceiver instance.
+   * @return static reference to single FusionEngineClient instance.
    */
-  static AtlasReceiver & getInstance() {
-    static AtlasReceiver instance; // static method field instatiated once
+  static FusionEngineClient & getInstance() {
+    static FusionEngineClient instance; // static method field instatiated once
     return instance;
   }
+
+  /* Illegal singleton copy operations */
+  FusionEngineClient(FusionEngineClient const &) = delete;
+  void operator=(FusionEngineClient const &) = delete;
 
   /**
    * Initialize needed to set a ros envoronment for logging output.
@@ -50,14 +55,26 @@ public:
 
   /**
    * Adds an event listener to be notified for every byte frames received.
-   * @param listener listener to be notified for byte frames received.
+   * @param listener Listener to be notified for byte frames received.
    * @return Nothing.
    */
-  void addByteFrameListener(AtlasByteFrameListener & listener) {
+  void addByteFrameListener(fusion_engine::ByteFrameListener & listener) {
     listenerList.push_back(&listener);
   }
 
-  // TODO: remove byte frame listener
+  /**
+   * Removes byte frame listener.
+   * @param listener Byte frame listener to remove.
+   * @return Removal success state.
+   */
+  bool removeByteFrameListener(fusion_engine::ByteFrameListener * listener) {
+    auto culprit = std::find(listenerList.begin(), listenerList.end(), listener);
+    if(culprit != listenerList.end()) {
+      listenerList.erase(culprit);
+      return true;
+    }
+    return false;
+  }
 
   /**
    * Read udp input stream from the Point One Nav until this
@@ -87,8 +104,8 @@ public:
         }
         inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), their_ip, sizeof(their_ip));
         total_bytes_read += bytes_read;
-        // notify listeners
-        fireAtlasByteFrameEvent(buffer, bytes_read);
+        fusion_engine::ByteFrameEvent evt(buffer, bytes_read);
+        fireFusionEngineByteFrameEvent(evt);
       }
       close(sock_);
       RCLCPP_INFO(node_->get_logger(), "Finished. %zu bytes read.", total_bytes_read);
@@ -121,12 +138,12 @@ public:
           break;
         }
         total_bytes_read += bytes_read;
-        fireAtlasByteFrameEvent(buffer, bytes_read);
+        fusion_engine::ByteFrameEvent evt(buffer, bytes_read);
+        fireFusionEngineByteFrameEvent(evt);
       }
     } catch(std::exception const & ex) {
       RCLCPP_ERROR_STREAM(node_->get_logger(), "Decoder exception: " << ex.what());
     }
-
   }
 
   /**
@@ -143,23 +160,20 @@ private:
   std::string connection_type_ = "";
   std::string tcp_ip_ = "";
   int sock_ = 0;
-  std::vector<AtlasByteFrameListener *> listenerList;
+  std::vector<fusion_engine::ByteFrameListener *> listenerList;
   rclcpp::Node * node_;
 
   /* private constructor for singleton design */
-  AtlasReceiver() {}
+  FusionEngineClient() {}
 
   /**
-   * Notifies all AtlasByteFrameListeners of a newly recieved byte frame.
-   * @param frame Raw byte frame received.
-   * @param bytes_read Size of byte frame.
-   * @param frame_ip Frame source ip.
+   * Notifies all fusion_engine::ByteFrameListeners of a newly recieved byte frame.
+   * @param evt Raw byte frame recieved along with its byte size.
    * @return Nothing.
    */
-  void fireAtlasByteFrameEvent(uint8_t * frame, size_t bytes_read) {
-    AtlasByteFrameEvent evt(frame, bytes_read);
-    for(AtlasByteFrameListener * listener : listenerList) {
-      listener->receivedAtlasByteFrame(evt);
+  void fireFusionEngineByteFrameEvent(fusion_engine::ByteFrameEvent evt) {
+    for(fusion_engine::ByteFrameListener * listener : listenerList) {
+      listener->receivedFusionEngineByteFrame(evt);
     }
   }
 

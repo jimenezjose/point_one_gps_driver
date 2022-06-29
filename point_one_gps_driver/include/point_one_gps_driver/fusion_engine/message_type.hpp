@@ -1,10 +1,12 @@
-#ifndef ATLAS_MESSAGE_TYPE_HPP
-#define ATLAS_MESSAGE_TYPE_HPP
+#ifndef FUSION_ENGINE_MESSAGE_TYPE_HPP
+#define FUSION_ENGINE_MESSAGE_TYPE_HPP
 
+namespace fusion_engine {
+    
 /**
  * @breif Atlas message type definitions.
  */
-enum class AtlasMessageType {
+enum class MessageType {
   /** Standard ROS GPSFix message.
    *  @see http://docs.ros.org/api/gps_common/html/msg/GPSFix.html
    * */
@@ -22,5 +24,7 @@ enum class AtlasMessageType {
    * */
   POSE = 3,
 };
+
+} // namespace fusion_engine
 
 #endif

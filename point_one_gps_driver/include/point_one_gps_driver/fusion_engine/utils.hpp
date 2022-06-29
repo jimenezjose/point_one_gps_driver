@@ -1,12 +1,14 @@
-#ifndef ATLAS_UTILS_HPP
-#define ATLAS_UTILS_HPP
+#ifndef FUSION_ENGINE_UTILS_HPP
+#define FUSION_ENGINE_UTILS_HPP
 
 #include "sensor_msgs/msg/imu.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "point_one/fusion_engine/messages/ros.h"
 
-class AtlasUtils {
+namespace fusion_engine {
+
+class Utils {
 public:
   /**
    * Helper method to translate Atlas GPSFixMessage to ROS standard GPSFix.
@@ -24,7 +26,7 @@ public:
     gps_fix.pitch     = contents.pitch_deg;
     gps_fix.roll      = contents.roll_deg;
     gps_fix.dip       = contents.dip_deg;
-    gps_fix.time      = 0;//contents.p1_time.seconds + (contents.p1_time.fraction_ns * 1e-9); // time since power-on
+    gps_fix.time      = contents.p1_time.seconds + (contents.p1_time.fraction_ns * 1e-9); // time since power-on
     gps_fix.gdop      = contents.gdop;
     gps_fix.hdop      = contents.hdop;
     gps_fix.vdop      = contents.vdop;
@@ -40,7 +42,7 @@ public:
     gps_fix.err_dip   = contents.err_dip_deg;
     std::copy(std::begin(contents.position_covariance_m2), std::end(contents.position_covariance_m2), std::begin(gps_fix.position_covariance));
     gps_fix.position_covariance_type = contents.position_covariance_type;
-    // TODO: Feature suggestion to add gps_fix.status.status for complete conversion.
+    // TODO (github/jimenezjose): Feature suggestion to add gps_fix.status.status for complete conversion.
     return gps_fix;
   }
 
@@ -110,5 +112,7 @@ public:
     return pose_stamped;
   }
 };
+
+} // namespace fusion_engine
 
 #endif

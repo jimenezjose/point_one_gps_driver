@@ -8,22 +8,22 @@ This is a ROS2 driver for [Atlas](https://pointonenav.com/docs/atlas) GPS / IMU 
 
 ##### Install driver dependencies:
 ```bash
-git clone https://github.com/jimenezjose/atlas_gps_driver.git
-cd atlas_gps_driver
+git clone https://github.com/jimenezjose/point_one_gps_driver.git
+cd point_one_gps_driver
 sudo apt-get update
 sudo rosdep update
-rosdep install -y --ignore-src --from-paths atlas_gps_driver/
+rosdep install -y --ignore-src --from-paths point_one_gps_driver/
 ```
 
 ##### Run Atlas node:
 
-* Edit the parameters in `atlas_gps_driver/param/atlas_gps_driver.param.yaml`.
-* Optional: Remap output topic names in `atlas_gps_driver/launch/atlas_gps_driver.launch.py`.
+* Edit the parameters in `point_one_gps_driver/param/point_one_gps_driver.param.yaml`.
+* Optional: Remap output topic names in `point_one_gps_driver/launch/point_one_gps_driver.launch.py`.
 
 ```bash
-cd atlas_gps_driver
+cd point_one_gps_driver
 source /opt/ros/galactic/setup.bash
 colcon build
 source install/local_setup.bash
-ros2 launch atlas_gps_driver atlas_gps_driver.launch.py
+ros2 launch point_one_gps_driver point_one_gps_driver.launch.py
 ```

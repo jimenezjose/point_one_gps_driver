@@ -1,5 +1,5 @@
-#ifndef POINT_ONE_NAV_ATLAS_HPP
-#define POINT_ONE_NAV_ATLAS_HPP
+#ifndef FUSION_ENGINE_POINT_ONE_GPS_HPP
+#define FUSION_ENGINE_POINT_ONE_GPS_HPP
 
 #include <vector>
 #include <cstdio>
@@ -14,12 +14,12 @@
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 
-#include "atlas_gps_driver/interfaces/atlas_message_listener.hpp"
-#include "atlas_gps_driver/interfaces/atlas_message_event.hpp"
-#include "atlas_gps_driver/interfaces/atlas_byte_frame_listener.hpp"
-#include "atlas_gps_driver/interfaces/atlas_byte_frame_event.hpp"
-#include "atlas_gps_driver/atlas_receiver.hpp"
-#include "atlas_gps_driver/common/utils.hpp"
+#include "point_one_gps_driver/fusion_engine/message_listener.hpp"
+#include "point_one_gps_driver/fusion_engine/message_event.hpp"
+#include "point_one_gps_driver/fusion_engine/byte_frame_listener.hpp"
+#include "point_one_gps_driver/fusion_engine/byte_frame_event.hpp"
+#include "point_one_gps_driver/fusion_engine_client.hpp"
+#include "point_one_gps_driver/fusion_engine/utils.hpp"
 
 namespace point_one {
   namespace fusion_engine {
@@ -28,20 +28,24 @@ namespace point_one {
 }
 
 /*
- * Reads bit stream from the Point One Nav Atlas and notifies all event
+ * Reads bit stream from the Point One Nav GPS and notifies all event
  * listeners attached to this singelton object once a complete message has
  * been received.
  */
-class Atlas : public AtlasByteFrameListener {
-
+class PointOneGps : public fusion_engine::ByteFrameListener {
 public:
+
   /**
-   * Singleton object. Only one message parser is necessary.
+   * Singleton object. Only one FusionEngine message parser is necessary.
    */
-  static Atlas & getInstance() {
-    static Atlas instance; // static method fields are instatiated once
+  static PointOneGps & getInstance() {
+    static PointOneGps instance; // static method fields are instatiated once
     return instance;
   }
+
+  /** Illegal operations for singleton object. */
+  PointOneGps(PointOneGps const&) = delete;
+  void operator=(PointOneGps const&) = delete;
 
   /**
    * Initialize needed to set a ros envoronment for logging output.
@@ -58,12 +62,27 @@ public:
    * @param listener object to be notified for gps message received.
    * @return Nothing.
    */
-  void addAtlasMessageListener(AtlasMessageListener & listener) {
+  void addMessageListener(fusion_engine::MessageListener & listener) {
     listenerList.push_back(&listener);
   }
 
   /**
-   * Callback function for every new parsed message received from Atlas.
+   * Removes byte frame listener.
+   * @param listener Byte frame listener to remove.
+   * @return Removal success state.
+   */
+  bool removeMessageListener(fusion_engine::MessageListener * listener) {
+    auto culprit = std::find(listenerList.begin(), listenerList.end(), listener);
+    if(culprit != listenerList.end()) {
+      // TODO (github/jimenezjose): explore if return listenerList.erase is possible.
+      listenerList.erase(culprit);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Callback function for every new parsed message received from FusionEngine.
    * @param header Metadata on payload.
    * @param payload_in Message received.
    * @return Nothing.
@@ -73,31 +92,31 @@ public:
 
     if(header.message_type == point_one::fusion_engine::messages::MessageType::ROS_GPS_FIX) {
       auto & contents = *reinterpret_cast<const point_one::fusion_engine::messages::ros::GPSFixMessage*>(payload);  
-      AtlasMessageEvent evt( AtlasUtils::toGPSFix(contents) );
-      fireAtlasMessageEvent(evt);
+      fusion_engine::MessageEvent evt( fusion_engine::Utils::toGPSFix(contents) );
+      fireFusionEngineMessageEvent(evt);
       // Also report standard {@link NavSatFix} translation of {@link GPSFix}.
-      AtlasMessageEvent navSatFixEvt( AtlasUtils::toNavSatFix(contents) );
-      fireAtlasMessageEvent(navSatFixEvt);
+      fusion_engine::MessageEvent navSatFixEvt( fusion_engine::Utils::toNavSatFix(contents) );
+      fireFusionEngineMessageEvent(navSatFixEvt);
     } 
     else if(header.message_type == point_one::fusion_engine::messages::MessageType::ROS_IMU) {
       auto & contents = *reinterpret_cast<const point_one::fusion_engine::messages::ros::IMUMessage*>(payload);
-      AtlasMessageEvent evt( AtlasUtils::toImu(contents) );
-      fireAtlasMessageEvent(evt);
+      fusion_engine::MessageEvent evt( fusion_engine::Utils::toImu(contents) );
+      fireFusionEngineMessageEvent(evt);
     }
     else if(header.message_type == point_one::fusion_engine::messages::MessageType::ROS_POSE) {
       auto & contents = *reinterpret_cast<const point_one::fusion_engine::messages::ros::PoseMessage*>(payload);
-      AtlasMessageEvent evt( AtlasUtils::toPose(contents) );
-      fireAtlasMessageEvent(evt);
+      fusion_engine::MessageEvent evt( fusion_engine::Utils::toPose(contents) );
+      fireFusionEngineMessageEvent(evt);
     }
   }
 
   /**
-   * Callback function for every new byte frame received from Atlas.
-   * @note Inherited from AtlasByteFrameListener interface.
+   * Callback function for every new byte frame received from FusionEngine.
+   * @note Inherited from fusion_engine::ByteFrameListener interface.
    * @param evt Wrapper that holds the byte frame data recieved.
    * @return Nothing.
    */
-  void receivedAtlasByteFrame(AtlasByteFrameEvent & evt) {
+  void receivedFusionEngineByteFrame(fusion_engine::ByteFrameEvent & evt) {
     framer.OnData(evt.frame, evt.bytes_read);
   }
 
@@ -108,10 +127,10 @@ public:
   void service() {
     auto connection_type = recv.get_connection_type();
     RCLCPP_INFO(node_->get_logger(), "Using connection_type %s", connection_type.c_str());
-    if (connection_type == "tcp") {
+    if(connection_type == "tcp") {
       recv.tcp_service();
     }
-    else if (connection_type == "udp") {
+    else if(connection_type == "udp") {
       recv.udp_service();
     }
     else {
@@ -121,24 +140,24 @@ public:
 
 private:
   point_one::fusion_engine::parsers::FusionEngineFramer framer;
-  std::vector<AtlasMessageListener *> listenerList;
-  AtlasReceiver & recv;
+  std::vector<fusion_engine::MessageListener *> listenerList;
+  FusionEngineClient & recv;
   rclcpp::Node * node_;
 
-  /* only one instance will exist - singleton object. */
-  Atlas() : framer(1024), recv(AtlasReceiver::getInstance()) {
+  /* Only one instance will exist - singleton object. */
+  PointOneGps() : framer(1024), recv(FusionEngineClient::getInstance()) {
     recv.addByteFrameListener(*this);
     framer.SetMessageCallback(point_one::fusion_engine::messageReceived);
   }
 
   /**
-   * Notifies all AtlasMessageListeners of a newly recieved gps message.
+   * Notifies all fusion_engine::MessageListeners of a newly recieved gps message.
    * @param evt data sent to listeners.
    * @return Nothing.
    */
-  void fireAtlasMessageEvent(AtlasMessageEvent evt) {
-    for(AtlasMessageListener * listener : listenerList) {
-      listener->receivedAtlasMessage(evt);
+  void fireFusionEngineMessageEvent(fusion_engine::MessageEvent evt) {
+    for(fusion_engine::MessageListener * listener : listenerList) {
+      listener->receivedFusionEngineMessage(evt);
     }
   }
 };
@@ -147,7 +166,7 @@ private:
 namespace point_one {
   namespace fusion_engine {
     void messageReceived(const messages::MessageHeader& header, const void* payload_in) {
-      Atlas::getInstance().messageReceived(header, payload_in);
+      PointOneGps::getInstance().messageReceived(header, payload_in);
     }
   }
 }

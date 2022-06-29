@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(atlas_gps_driver)
+project(point_one_gps_driver)
 
 include(ExternalProject)
 
@@ -19,7 +19,7 @@ ament_auto_find_build_dependencies(REQUIRED
 )
 
 set(${PROJECT_NAME}_SRC
-  src/atlas_node.cpp
+  src/point_one_gps_node.cpp
 )
 
 # Create this project as an executable.
@@ -42,7 +42,7 @@ ExternalProject_Add(project_p1_fusion_engine_client
 # Include header files required for external project.
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
 
-# Append shared library path to dynamic linker.
+# Append shared library path to dynamic linker in rpath (runtime search path).
 SET(CMAKE_EXE_LINKER_FLAGS 
   "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,${EXTERNAL_INSTALL_LOCATION}/lib"
 )

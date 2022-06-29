@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>atlas_gps_driver</name>
+  <name>point_one_gps_driver</name>
   <version>0.0.0</version>
-  <description>Point One Navigation - Atlas GPS Driver</description>
+  <description>Point One Navigation GPS Driver</description>
   <maintainer email="josejimenezjr18@gmail.com">Jose Jimenez</maintainer>
   <license>MIT License</license>
 
