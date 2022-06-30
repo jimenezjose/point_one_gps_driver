@@ -14,7 +14,7 @@ def generate_launch_description():
         'point_one_gps_driver.param.yaml'
     )
     
-    atlas_node = Node(
+    gps_node = Node(
         package='point_one_gps_driver',
         executable='point_one_gps_driver_node_exe',
         output='screen',
@@ -30,6 +30,6 @@ def generate_launch_description():
     )
 
     ld = LaunchDescription()
-    ld.add_action(atlas_node)
+    ld.add_action(gps_node)
 
     return ld

@@ -16,11 +16,10 @@
 #include <algorithm>
 
 #include "rclcpp/rclcpp.hpp"
-#include "point_one_gps_driver/fusion_engine/byte_frame_listener.hpp"
-#include "point_one_gps_driver/fusion_engine/byte_frame_event.hpp"
+#include "point_one_gps_driver/fusion_engine/core.h"
 
 /*
- * Reads bit stream from the Point One Nav Atlas and notifies all event 
+ * Reads bit stream from the Point One Nav FusionEngine and notifies all event 
  * listeners attached to this singleton object once a raw FusionEngine 
  * data packet is receieved.
  */

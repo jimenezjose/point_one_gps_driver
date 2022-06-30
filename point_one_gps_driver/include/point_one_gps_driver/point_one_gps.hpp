@@ -14,12 +14,9 @@
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 
-#include "point_one_gps_driver/fusion_engine/message_listener.hpp"
-#include "point_one_gps_driver/fusion_engine/message_event.hpp"
-#include "point_one_gps_driver/fusion_engine/byte_frame_listener.hpp"
-#include "point_one_gps_driver/fusion_engine/byte_frame_event.hpp"
+#include "point_one_gps_driver/fusion_engine/core.h"
+
 #include "point_one_gps_driver/fusion_engine_client.hpp"
-#include "point_one_gps_driver/fusion_engine/utils.hpp"
 
 namespace point_one {
   namespace fusion_engine {
@@ -121,7 +118,7 @@ public:
   }
 
   /**
-   * Main service to receive gps data from Atlas.
+   * Main service to receive gps data from FusionEngine.
    * @return Nothing.
    */
   void service() {

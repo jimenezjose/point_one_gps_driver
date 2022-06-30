@@ -1,1 +1,7 @@
-// TODO (github/jimenezjose): entire fusion engine headers included here
+#include "point_one_gps_driver/fusion_engine/byte_frame_event.hpp"
+#include "point_one_gps_driver/fusion_engine/byte_frame_listener.hpp"
+#include "point_one_gps_driver/fusion_engine/connection_type.hpp"
+#include "point_one_gps_driver/fusion_engine/message_event.hpp"
+#include "point_one_gps_driver/fusion_engine/message_listener.hpp"
+#include "point_one_gps_driver/fusion_engine/message_type.hpp"
+#include "point_one_gps_driver/fusion_engine/utils.hpp"

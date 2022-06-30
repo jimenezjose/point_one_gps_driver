@@ -50,7 +50,7 @@ SET(CMAKE_EXE_LINKER_FLAGS
 # Library is not built until there is a dependency.
 add_dependencies(${PROJECT_NAME}_node_exe project_p1_fusion_engine_client)
 
-# Link Atlas node to fusion_engine_client library.
+# Link point_one_gps node to fusion_engine_client library.
 target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)
 
 if(BUILD_TESTING)

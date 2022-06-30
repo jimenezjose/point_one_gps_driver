@@ -10,7 +10,7 @@ namespace fusion_engine {
 class MessageListener {
 public:
   /**
-   * Triggers when atlas receives a complete message.
+   * Triggers when FusionEngine receives a complete message.
    * @param evt Event that wraps the message data received.
    */
   virtual void receivedFusionEngineMessage(MessageEvent & evt) = 0;

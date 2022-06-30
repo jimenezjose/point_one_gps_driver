@@ -4,7 +4,7 @@
 namespace fusion_engine {
     
 /**
- * @breif Atlas message type definitions.
+ * @breif FusionEngine message type definitions.
  */
 enum class MessageType {
   /** Standard ROS GPSFix message.

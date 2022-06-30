@@ -11,9 +11,10 @@
 #include "sensor_msgs/msg/nav_sat_status.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 
-#include "point_one_gps_driver/fusion_engine/message_listener.hpp"
-#include "point_one_gps_driver/fusion_engine/message_event.hpp"
-#include "point_one_gps_driver/fusion_engine/message_type.hpp"
+// #include "point_one_gps_driver/fusion_engine/message_listener.hpp"
+// #include "point_one_gps_driver/fusion_engine/message_event.hpp"
+// #include "point_one_gps_driver/fusion_engine/message_type.hpp"
+#include "point_one_gps_driver/fusion_engine/core.h"
 #include "point_one_gps_driver/point_one_gps.hpp"
 
 /*

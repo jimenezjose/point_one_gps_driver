@@ -11,7 +11,7 @@ namespace fusion_engine {
 class Utils {
 public:
   /**
-   * Helper method to translate Atlas GPSFixMessage to ROS standard GPSFix.
+   * Helper method to translate FusionEngine GPSFixMessage to ROS standard GPSFix.
    * @param contents Culprit gps data to be translated.
    * @return ROS standard message - GPSFix.
    */
@@ -47,7 +47,7 @@ public:
   }
 
   /**
-   * Helper method to translate Atlas GPSFixMessage to ROS standard NavSatFix.
+   * Helper method to translate FusionEngine GPSFixMessage to ROS standard NavSatFix.
    * @param contents Culprit gps data to be translated.
    * @return ROS standard message - NavSatFix.
    */
@@ -73,7 +73,7 @@ public:
   }
 
   /**
-   * Helper method to translate Atlas IMUMessage to ROS standard Imu.
+   * Helper method to translate FusionEngine IMUMessage to ROS standard Imu.
    * @param contents Culprit gps data to be translated.
    * @return ROS standard message - Imu.
    */
@@ -96,7 +96,7 @@ public:
   }
 
   /**
-   * Helper method to translate Atlas PoseMessage to ROS standard PoseStamped.
+   * Helper method to translate FusionEngine PoseMessage to ROS standard PoseStamped.
    * @param contents Culprit pose data to be translated.
    * @return ROS standard message - PoseStamped.
    */
