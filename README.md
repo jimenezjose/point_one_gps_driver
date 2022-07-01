@@ -1,6 +1,6 @@
-# Atlas GPS Driver
+# Point One Navigation GPS Driver
 
-This is a ROS2 driver for [Atlas](https://pointonenav.com/docs/atlas) GPS / IMU Devices. 
+This is a ROS2 driver for [Point One Navigation](https://pointonenav.com) GPS / IMU Devices. 
 
 > The Atlas delivers 10cm location accuracy in any environment with its proprietary [FusionEngine](https://pointonenav.com/fusionengine) software.
 
@@ -15,7 +15,7 @@ sudo rosdep update
 rosdep install -y --ignore-src --from-paths point_one_gps_driver/
 ```
 
-##### Run Atlas node:
+##### Run driver node:
 
 * Edit the parameters in `point_one_gps_driver/param/point_one_gps_driver.param.yaml`.
 * Optional: Remap output topic names in `point_one_gps_driver/launch/point_one_gps_driver.launch.py`.
