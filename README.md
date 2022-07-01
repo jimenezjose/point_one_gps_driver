@@ -1,6 +1,6 @@
 # Point One Navigation GPS Driver
 
-This is a ROS2 driver for [Point One Navigation](https://pointonenav.com) GPS / IMU Devices. 
+This is a C++ ROS2 driver for [Point One Navigation](https://pointonenav.com) GPS / IMU Devices. 
 
 > Less than 10cm location accuracy is accomplished by its [FusionEngine](https://pointonenav.com/fusionengine) software.
 
