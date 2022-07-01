@@ -2,7 +2,7 @@
 
 This is a ROS2 driver for [Point One Navigation](https://pointonenav.com) GPS / IMU Devices. 
 
-> The Atlas delivers 10cm location accuracy in any environment with its proprietary [FusionEngine](https://pointonenav.com/fusionengine) software.
+> Less than 10cm location accuracy is accomplished by its [FusionEngine](https://pointonenav.com/fusionengine) software.
 
 ### Getting Started
 
